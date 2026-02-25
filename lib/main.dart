@@ -67,6 +67,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _resetCounter() {
+    setState(() {
+      _counter = 0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -112,10 +118,21 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: _resetCounter,
+            tooltip: 'Reset',
+            child: const Icon(Icons.refresh),
+          ),
+          const SizedBox(width: 16),
+          FloatingActionButton(
+            onPressed: _incrementCounter,
+            tooltip: 'Increment',
+            child: const Icon(Icons.add),
+          ),
+        ],
       ),
     );
   }
