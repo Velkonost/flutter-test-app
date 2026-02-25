@@ -1,0 +1,29 @@
+# GitHub Actions CI для flutter-test-app
+# Назначение: main
+# Основной язык: unknown (специфичная конфигурация недоступна)
+
+name: CI — flutter-test-app
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Info
+        run: |
+          echo "Репозиторий: flutter-test-app"
+          echo "Основной язык: unknown"
+          echo "Специфичная CI-конфигурация для этого языка отсутствует"
+          echo "Требуется ручная настройка CI"
