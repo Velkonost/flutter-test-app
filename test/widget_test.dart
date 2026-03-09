@@ -1,38 +1,37 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_test_app/main.dart';
+import 'package:flutter_test_app/settings_screen.dart';
+import 'package:flutter_test_app/theme_notifier.dart';
+
+Future<Widget> buildTestApp({bool isDark = false}) async {
+  SharedPreferences.setMockInitialValues(
+    <String, Object>{'theme_mode_is_dark': isDark},
+  );
+  final prefs = await SharedPreferences.getInstance();
+  final themeNotifier = ThemeNotifier(prefs: prefs);
+  return MyApp(themeNotifier: themeNotifier);
+}
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(await buildTestApp());
 
-    // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
     expect(find.text('1'), findsNothing);
 
-    // Tap the '+' icon and trigger a frame.
     await tester.tap(find.byIcon(Icons.add));
     await tester.pump();
 
-    // Verify that our counter has incremented.
     expect(find.text('0'), findsNothing);
     expect(find.text('1'), findsOneWidget);
   });
 
   testWidgets('Counter resets to zero', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(await buildTestApp());
 
-    // Increment counter to 3.
     await tester.tap(find.byIcon(Icons.add));
     await tester.pump();
     await tester.tap(find.byIcon(Icons.add));
@@ -41,12 +40,54 @@ void main() {
     await tester.pump();
     expect(find.text('3'), findsOneWidget);
 
-    // Tap reset button.
     await tester.tap(find.byIcon(Icons.refresh));
     await tester.pump();
 
-    // Verify counter is reset to 0.
     expect(find.text('0'), findsOneWidget);
     expect(find.text('3'), findsNothing);
+  });
+
+  testWidgets('Settings icon navigates to SettingsScreen',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(await buildTestApp());
+
+    expect(find.byIcon(Icons.settings), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.settings));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SettingsScreen), findsOneWidget);
+    expect(find.text('Settings'), findsOneWidget);
+    expect(find.text('Dark Mode'), findsOneWidget);
+  });
+
+  testWidgets('Dark mode toggle switches theme', (WidgetTester tester) async {
+    await tester.pumpWidget(await buildTestApp());
+
+    // Navigate to settings
+    await tester.tap(find.byIcon(Icons.settings));
+    await tester.pumpAndSettle();
+
+    // Verify dark mode is off (light_mode icon visible)
+    expect(find.byIcon(Icons.light_mode), findsOneWidget);
+
+    // Toggle dark mode on
+    await tester.tap(find.byType(Switch));
+    await tester.pumpAndSettle();
+
+    // Verify dark mode is now on (dark_mode icon visible)
+    expect(find.byIcon(Icons.dark_mode), findsOneWidget);
+  });
+
+  testWidgets('App starts in dark mode when preference is saved',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(await buildTestApp(isDark: true));
+
+    // Navigate to settings
+    await tester.tap(find.byIcon(Icons.settings));
+    await tester.pumpAndSettle();
+
+    // Verify dark mode icon is shown
+    expect(find.byIcon(Icons.dark_mode), findsOneWidget);
   });
 }
