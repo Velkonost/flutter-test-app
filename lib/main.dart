@@ -77,6 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Semantics(
             label: 'Open settings',
             child: IconButton(
+              key: const Key('settings_button'),
               icon: const Icon(Icons.settings),
               tooltip: 'Settings',
               onPressed: () {
@@ -98,6 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
             const Text('You have pushed the button this many times:'),
             Text(
               '$_counter',
+              key: const Key('counter_text'),
               style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],
@@ -107,6 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
+            key: const Key('reset_button'),
             heroTag: 'reset',
             onPressed: _resetCounter,
             tooltip: 'Reset',
@@ -114,6 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           const SizedBox(width: 16),
           FloatingActionButton(
+            key: const Key('increment_button'),
             heroTag: 'increment',
             onPressed: _incrementCounter,
             tooltip: 'Increment',

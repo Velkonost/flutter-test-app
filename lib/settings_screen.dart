@@ -19,6 +19,7 @@ class SettingsScreen extends StatelessWidget {
           Semantics(
             label: 'Dark mode toggle',
             child: SwitchListTile(
+              key: const Key('dark_mode_toggle'),
               secondary: Icon(
                 themeNotifier.isDarkMode
                     ? Icons.dark_mode
